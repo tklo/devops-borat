@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="gnome-shell-extensions">
+  <enum id="org.gnome.shell.extensions.aliento.idioma-aliento">
+    <value nick="es" value="0"/>
+    <value nick="en" value="1"/>
+  </enum>
+  <schema path="/org/gnome/shell/extensions/aliento/" id="org.gnome.shell.extensions.aliento">
+    <key name="idioma-aliento" enum="org.gnome.shell.extensions.aliento.idioma-aliento">
+      <default>'es'</default>
+    </key>
+  </schema>
+</schemalist>
