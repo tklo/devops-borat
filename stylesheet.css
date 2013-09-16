@@ -1,0 +1,19 @@
+.alientoTitulo {
+	padding: 10px, 0px, 20px, 20px;
+	font-weight: bold;
+	
+}
+
+.alientoTexto {
+	padding-left: 30px;
+    padding-right: 30px;
+	font-style:italic;
+}
+
+.boxStyle {
+	min-height: 100px;
+}
+
+.botones {
+	icon-size: 20px;
+}
