@@ -1,0 +1,31 @@
+#: extension.js:50 107 308
+msgid "Aliento diario"
+msgstr "Aliento diario"
+
+#: extension.js:231
+msgid "Compartir"
+msgstr "Compartir"
+
+#: extension.js:249
+msgid "Aliento"
+msgstr "Aliento"
+
+#: extension.js:257
+msgid "Compartir en Facebook"
+msgstr "Compartir en Facebook"
+
+#: extension.js:258
+msgid "Copiar link"
+msgstr "Copiar link"
+
+#: prefs.js:34
+msgid "Idioma Aliento"
+msgstr "Idioma Aliento"
+
+#: prefs.js:48
+msgid "Español"
+msgstr "Español"
+
+#: prefs.js:49
+msgid "Ingles"
+msgstr "Ingles"
