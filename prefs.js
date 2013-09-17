@@ -4,8 +4,8 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
 
-const Gettext = imports.gettext.domain('gnome-shell-extensions');
-const _ = Gettext.gettext;
+const Gettext = imports.gettext;
+const _ = Gettext.domain('aliento').gettext;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
@@ -25,25 +25,22 @@ const AlientoPrefsWidget = new GObject.Class({
     _init: function(params) {
         this.parent(params);
 
+        let locales = Me.dir.get_path() + "/locale";
+        Gettext.bindtextdomain('aliento', locales);
+
         this.shadow_type = Gtk.ShadowType.NONE;
         this.margin = 24;
 
-        let title = '<b>' + _("Idioma Aliento") + '</b>';
+        let title = '<b>' + _("Configuracion Aliento diario") + '</b>';
         let titleLabel = new Gtk.Label({ use_markup: true, label: title });
         this.set_label_widget(titleLabel);
 
-        let align = new Gtk.Alignment({ left_padding: 12 });
+        let align = new Gtk.Alignment({ left_padding: 20, top_padding: 20 });
         this.add(align);
-
-        let grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
-                                  row_spacing: 6,
-                                  column_spacing: 6,
-                                  margin_top: 6 });
-        align.add(grid);
 
         const clickActionOptions = [
           [_("Español")     , 0],
-          [_("English")     , 1]
+          [_("Ingles")     , 1]
         ];
 
         const currentClickAction = _settings.get_enum('idioma-aliento');
@@ -53,7 +50,21 @@ const AlientoPrefsWidget = new GObject.Class({
           function (value) _settings.set_enum('idioma-aliento', value)
         );
 
-        grid.add(comboBoxDefaultClickAction);
+        const labelCombo = new Gtk.Label({
+          label: _('Idioma del aliento'),
+          xalign: 0,
+          expand: true
+        });
+
+        const hbox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL,
+                  margin_top: 5,
+                  expand: false
+                });
+
+        align.add(hbox);
+
+        hbox.add(labelCombo);
+        hbox.add(comboBoxDefaultClickAction);
     }
 
 });

@@ -7,7 +7,8 @@
 .alientoTexto {
 	padding-left: 30px;
     padding-right: 30px;
-	font-style:italic;
+	font-style: italic;
+	text-align: justify;
 }
 
 .boxStyle {

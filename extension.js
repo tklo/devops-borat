@@ -10,20 +10,27 @@ const Meta = imports.gi.Meta;
 const Tweener = imports.ui.tweener;
 
 const MessageTray = imports.ui.messageTray;
+const Local = imports.misc.extensionUtils.getCurrentExtension();
+const Convenience = Local.imports.utils;
 
 const Gettext = imports.gettext;
-const _ = Gettext.domain('gnome-shell-extensions').gettext;
+const _ = Gettext.domain('aliento').gettext;
 
-const URL = "http://www.sgi.org/es/presidente-de-la-sgi/aliento-diario.html";
+const SGI_URL_ES = "http://www.sgi.org/es/presidente-de-la-sgi/aliento-diario.html";
+const SGI_URL_EN = "http://www.sgi.org/sgi-president/daily-encouragement.html";
+const ES = 0;
+const EN = 1;
 
 let meta;
 let aliento;
 let notificacion;
+let opciones;
 
 function AlientoDiario(metadata)
 {
+	opciones = Convenience.getSettings();
 	let locales = metadata.path + "/locale";
-	Gettext.bindtextdomain('alientoDiario', locales);
+	Gettext.bindtextdomain('aliento', locales);
 
 	this._init();
 }
@@ -40,7 +47,7 @@ AlientoDiario.prototype =
 		this.mainBox = null;
 
 		notificacion = new MessageTray.Source(
-      		"Aliento diario", "icono"
+      		_("Aliento diario"), "icono"
     	);
 
 		let theme = imports.gi.Gtk.IconTheme.get_default();
@@ -52,6 +59,10 @@ AlientoDiario.prototype =
 		});
 
 		this.actor.add_actor(this.botonAliento);
+
+		this.cambio =
+            opciones.connect('changed::idioma-aliento',
+                Lang.bind(this, this._refresh));
 
 		this._refresh();
 	},
@@ -76,22 +87,24 @@ AlientoDiario.prototype =
 		this.scrollView.add_actor(this.alientoBox);
 		this.mainBox.add_actor(this.scrollView);
 
+		let archivo;
 
-		let archivo = Gio.file_new_for_uri(URL);
-
-		/*TODO: Ajustar el string
-				*/
+		if(opciones.get_enum('idioma-aliento') == ES)
+			archivo = Gio.file_new_for_uri(SGI_URL_ES);
+		if(opciones.get_enum('idioma-aliento') == EN){
+			archivo = Gio.file_new_for_uri(SGI_URL_EN);
+		}
 
 		let alientoTexto;
 		alientoTexto = obtenerAliento(archivo.load_contents(null).toString());
+
 		alientoTexto = reemplazarCaracteres(alientoTexto);
 		alientoTexto = ajustarTexto(alientoTexto);
 		
 
 		this.alientoBox.get_parent().add_style_class_name("boxStyle");
 
-		let titulo = new St.Label({ text: _("Aliento diario"),
-                                          style_class: 'alientoTitulo' });
+		let titulo = new St.Label({ text: _("Aliento diario"), style_class: 'alientoTitulo' });
 
 		this.alientoBox.add(titulo);
 
@@ -101,7 +114,6 @@ AlientoDiario.prototype =
 		this.alientoBox.add(label);
 
 
-		// Separator
 		this.Separator = new PopupMenu.PopupSeparatorMenuItem();
 		this.mainBox.add_actor(this.Separator.actor);
 
@@ -112,25 +124,36 @@ AlientoDiario.prototype =
 
 	_enable: function()
 	{		
-		//Cuando cambia el archivo	
-		let alientoArchivo = Gio.file_new_for_uri(URL);
+		//Cuando cambia el archivo
+		let alientoArchivo;
+
+		if(opciones.get_enum('idioma-aliento') == ES)
+			alientoArchivo = Gio.file_new_for_uri(SGI_URL_ES);
+		if(opciones.get_enum('idioma-aliento') == EN)
+			alientoArchivo = Gio.file_new_for_uri(SGI_URL_EN);
 		this.monitor = alientoArchivo.monitor(Gio.FileMonitorFlags.NONE, null);
 		this.monitor.connect('changed', Lang.bind(this, this._refresh));
 	},
 
 	_disable: function()
 	{
-		global.display.remove_keybinding(key_open);
-		this.monitor.cancel();
 	}
 }
 
 function obtenerAliento(string)
 {
-	let cortado = string.substring(string.search("dailyBlock"), string.search("<p><span>Daisaku Ikeda, presidente de la SGI</span></p>"));
-	cortado = cortado.substring(cortado.search("</h2>"), cortado.search("<p>&nbsp;</p>"));
+	let cortado;
+
+	if(opciones.get_enum('idioma-aliento') == ES){
+		cortado = string.substring(string.search("dailyBlock"), string.search("<p><span>Daisaku Ikeda, presidente de la SGI</span></p>"));
+		cortado = cortado.substring(cortado.search("</h2>"), cortado.search("<p>&nbsp;</p>"));
+	}
+	if(opciones.get_enum('idioma-aliento') == EN)
+		cortado = string.substring(string.search("dailyBlock"), string.search("<p><span>Daisaku Ikeda, SGI President</span></p>"));
+
 	cortado = cortado.substring(cortado.search("<p>"), cortado.search("</p>"));
 	cortado = cortado.replace("<p>", "");
+
 
 	return cortado;
 }
@@ -204,7 +227,8 @@ function addFacebookShare(alientoTexto){
     });
 
     this.labelFacebook = new St.Label();
-    this.labelFacebook.clutter_text.set_markup("Compartir");
+
+    this.labelFacebook.clutter_text.set_markup(_("Compartir"));
 
     this.botonBox.add(this.labelFacebook, {
         x_fill: false,
@@ -230,8 +254,8 @@ function addFacebookShare(alientoTexto){
 
     		n.setResident(true);
 
-		    n.update(_("Compartir en facebook"), url);
-		    n.addButton('copy', _("Copiar Link"));
+		    n.update(_("Compartir en Facebook"), url);
+		    n.addButton('copy', _("Copiar link"));
 
 		    n.connect('action-invoked', function (ns, action) {
 		      if (action == 'copy') {
@@ -281,7 +305,7 @@ function enable()
 {
 	aliento = new AlientoDiario(meta);
 	aliento._enable();
-	Main.panel.addToStatusArea('Aliento Diario', aliento);
+	Main.panel.addToStatusArea(_('Aliento Diario'), aliento);
 }
 
 function disable()
