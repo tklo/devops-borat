@@ -1,20 +1,20 @@
-#: extension.js:50 107 308
+#: extension.js:50 107 309
 msgid "Aliento diario"
 msgstr "Aliento diario"
 
-#: extension.js:231
+#: extension.js:232
 msgid "Compartir"
 msgstr "Compartir"
 
-#: extension.js:249
+#: extension.js:250
 msgid "Aliento"
 msgstr "Aliento"
 
-#: extension.js:257
+#: extension.js:258
 msgid "Compartir en Facebook"
 msgstr "Compartir en Facebook"
 
-#: extension.js:258
+#: extension.js:259
 msgid "Copiar link"
 msgstr "Copiar link"
 
