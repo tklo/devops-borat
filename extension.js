@@ -171,6 +171,7 @@ function reemplazarCaracteres(string){
 	string = string.replace(/&Uacute;/g, "Ú");
 	string = string.replace(/&ntilde;/g, "ñ");
 	string = string.replace(/&Ntilde;/g, "Ñ");
+	string = string.replace(/&iquest;/g, "¿");
 
 	string = string.replace(/<em>/g, "");
 	string = string.replace(/<\/em>/g, "");
