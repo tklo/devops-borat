@@ -13,11 +13,17 @@ const MessageTray = imports.ui.messageTray;
 const Local = imports.misc.extensionUtils.getCurrentExtension();
 const Convenience = Local.imports.utils;
 
+//Conexion
+const Soup = imports.gi.Soup;
+const _httpSession = new Soup.SessionAsync();
+
 const Gettext = imports.gettext;
 const _ = Gettext.domain('aliento').gettext;
 
 const SGI_URL_ES = "http://www.sgi.org/es/presidente-de-la-sgi/aliento-diario.html";
 const SGI_URL_EN = "http://www.sgi.org/sgi-president/daily-encouragement.html";
+//const SGI_URL_ES = "http://localhost/elinux/es.html";
+//const SGI_URL_EN = "http://localhost/elinux/en.html";
 const ES = 0;
 const EN = 1;
 
@@ -87,38 +93,40 @@ AlientoDiario.prototype =
 		this.scrollView.add_actor(this.alientoBox);
 		this.mainBox.add_actor(this.scrollView);
 
-		let archivo;
+		let archivo, alientoTexto, claseAlientoTexto;
 
-		if(opciones.get_enum('idioma-aliento') == ES)
-			archivo = Gio.file_new_for_uri(SGI_URL_ES);
-		if(opciones.get_enum('idioma-aliento') == EN){
-			archivo = Gio.file_new_for_uri(SGI_URL_EN);
+		if(verificarConex()){
+			if(opciones.get_enum('idioma-aliento') == ES)
+				archivo = Gio.file_new_for_uri(SGI_URL_ES);
+			if(opciones.get_enum('idioma-aliento') == EN)
+				archivo = Gio.file_new_for_uri(SGI_URL_EN);
+
+			alientoTexto = obtenerAliento(archivo.load_contents(null).toString());
+
+			alientoTexto = reemplazarCaracteres(alientoTexto);
+			alientoTexto = ajustarTexto(alientoTexto);
+			claseAlientoTexto = 'alientoTexto';
+		}else{
+			alientoTexto = "<b>Error de conexión</b>"; //agregar a locale
+			claseAlientoTexto = 'alientoError';
 		}
-
-		let alientoTexto;
-		alientoTexto = obtenerAliento(archivo.load_contents(null).toString());
-
-		alientoTexto = reemplazarCaracteres(alientoTexto);
-		alientoTexto = ajustarTexto(alientoTexto);
-		
-
-		this.alientoBox.get_parent().add_style_class_name("boxStyle");
 
 		let titulo = new St.Label({ text: _("Aliento diario"), style_class: 'alientoTitulo' });
 
 		this.alientoBox.add(titulo);
 
-        let label = new St.Label({ text: _(alientoTexto),
-                                          style_class: 'alientoTexto' });
+		let label = new St.Label({style_class: claseAlientoTexto});
+		label.clutter_text.set_markup(alientoTexto);
 
 		this.alientoBox.add(label);
 
+		if(claseAlientoTexto == 'alientoTexto'){
+			this.Separator = new PopupMenu.PopupSeparatorMenuItem();
+			this.mainBox.add_actor(this.Separator.actor);
 
-		this.Separator = new PopupMenu.PopupSeparatorMenuItem();
-		this.mainBox.add_actor(this.Separator.actor);
+			this.mainBox.add_actor(addFacebookShare(alientoTexto));
+		}
 
-		
-		this.mainBox.add_actor(addFacebookShare(alientoTexto));
 		tasksMenu.addActor(this.mainBox);
 	},
 
@@ -138,6 +146,21 @@ AlientoDiario.prototype =
 	_disable: function()
 	{
 	}
+}
+
+function verificarConex(){
+	let multipart = new Soup.Multipart(Soup.FORM_MIME_TYPE_MULTIPART);
+	let message;
+
+	if(opciones.get_enum('idioma-aliento') == ES)
+		message = Soup.form_request_new_from_multipart(SGI_URL_ES, multipart);
+	if(opciones.get_enum('idioma-aliento') == EN)
+		message = Soup.form_request_new_from_multipart(SGI_URL_EN, multipart);
+
+      if (_httpSession.send_message(message) == 200)
+        return true;
+      else
+      	return false;
 }
 
 function obtenerAliento(string)
