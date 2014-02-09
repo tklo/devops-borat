@@ -179,6 +179,7 @@ function obtenerAliento(string)
 
 	cortado = cortado.substring(cortado.search("<p>"), cortado.search("</p>"));
 	cortado = cortado.replace("<p>", "");
+	cortado = cortado.replace("<p>", "");
 
 
 	return cortado;

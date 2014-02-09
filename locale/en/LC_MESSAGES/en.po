@@ -1,20 +1,20 @@
-#: extension.js:54 96 335
+#: extension.js:54 96 336
 msgid "Aliento diario"
 msgstr "Daily encouragement"
 
-#: extension.js:258
+#: extension.js:259
 msgid "Compartir"
 msgstr "Share"
 
-#: extension.js:276
+#: extension.js:277
 msgid "Aliento"
 msgstr "Encouragement"
 
-#: extension.js:284
+#: extension.js:285
 msgid "Compartir en Facebook"
 msgstr "Share in Facebook"
 
-#: extension.js:285
+#: extension.js:286
 msgid "Copiar link"
 msgstr "Copy link"
 
