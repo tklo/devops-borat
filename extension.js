@@ -22,8 +22,6 @@ const _ = Gettext.domain('aliento').gettext;
 
 const SGI_URL_ES = "http://www.sgi.org/es/presidente-de-la-sgi/aliento-diario.html";
 const SGI_URL_EN = "http://www.sgi.org/sgi-president/daily-encouragement.html";
-//const SGI_URL_ES = "http://localhost/elinux/es.html";
-//const SGI_URL_EN = "http://localhost/elinux/en.html";
 const ES = 0;
 const EN = 1;
 
@@ -93,7 +91,10 @@ AlientoDiario.prototype =
 		this.scrollView.add_actor(this.alientoBox);
 		this.mainBox.add_actor(this.scrollView);
 
-		let archivo, alientoTexto, claseAlientoTexto;
+		let archivo, alientoTexto, claseAlientoTexto, label;
+
+		let titulo = new St.Label({ text: _("Aliento diario"), style_class: 'alientoTitulo' });
+		this.alientoBox.add(titulo);
 
 		if(verificarConex()){
 			if(opciones.get_enum('idioma-aliento') == ES)
@@ -106,19 +107,21 @@ AlientoDiario.prototype =
 			alientoTexto = reemplazarCaracteres(alientoTexto);
 			alientoTexto = ajustarTexto(alientoTexto);
 			claseAlientoTexto = 'alientoTexto';
+			
+			label = new St.Label({style_class: claseAlientoTexto, text: alientoTexto});
+			
 		}else{
-			alientoTexto = "<b>Error de conexión</b>"; //agregar a locale
 			claseAlientoTexto = 'alientoError';
+
+			label = new St.Label({style_class: claseAlientoTexto});
+			label.clutter_text.set_markup(_("<b>Error de conexión</b>"));
 		}
 
-		let titulo = new St.Label({ text: _("Aliento diario"), style_class: 'alientoTitulo' });
 
-		this.alientoBox.add(titulo);
+		let labelBox = new St.BoxLayout();
+		labelBox.add_actor(label);
 
-		let label = new St.Label({style_class: claseAlientoTexto});
-		label.clutter_text.set_markup(alientoTexto);
-
-		this.alientoBox.add(label);
+		this.alientoBox.add(labelBox);
 
 		if(claseAlientoTexto == 'alientoTexto'){
 			this.Separator = new PopupMenu.PopupSeparatorMenuItem();
@@ -127,7 +130,7 @@ AlientoDiario.prototype =
 			this.mainBox.add_actor(addFacebookShare(alientoTexto));
 		}
 
-		tasksMenu.addActor(this.mainBox);
+		tasksMenu.box.add(this.mainBox);
 	},
 
 	_enable: function()
