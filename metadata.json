@@ -1,6 +1,7 @@
 { 
-	"uuid": "Aliento_Diario@Siddharta", 
-	"name": "Aliento Diario", 
+	"uuid": "Aliento_Diario@brutalchrist.info", 
+	"name": "Aliento Diario",
+	"id": "aliento-diario",
 	"description": "Fragmentos de escritos de Daisaku Ikeda presentados a manera de calendario",
 	"url": "https://github.com/brutalchrist/alientoDiario",
 	"settings-schema": "org.gnome.shell.extensions.aliento",
