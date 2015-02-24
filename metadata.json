@@ -1,10 +1,10 @@
 { 
-	"uuid": "Aliento_Diario@brutalchrist.info", 
-	"name": "Aliento Diario",
-	"id": "aliento-diario",
-	"description": "Fragmentos de escritos de Daisaku Ikeda presentados a manera de calendario",
-	"url": "https://github.com/brutalchrist/alientoDiario",
-	"settings-schema": "org.gnome.shell.extensions.aliento",
+	"uuid": "Tomasz.Michal.Klosinski@gmail.com", 
+	"name": "@DEVOPS_BORAT",
+	"id": "devops-borat",
+	"description": "Daily dose of wisdom of @DEVOPS_BORAT",
+	"url": "https://github.com/tklo/devops-borat",
+	"settings-schema": "org.gnome.shell.extensions.borat",
 	"shell-version": [
 		"3.9.1", 
 		"3.9.2", 
